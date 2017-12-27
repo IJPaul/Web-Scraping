@@ -63,6 +63,5 @@ def getLinks(url):
         if 'href' in link.attrs:
             print(link.attrs['href'])
 
-getLinks("https://en.wikipedia.org/wiki/Calculus")
 
     
