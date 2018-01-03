@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from urllib.error import HTTPError
 
@@ -57,11 +57,57 @@ def getLinks(url):
     Precondition: url is a str
     """
     import re
+    
     html = urlopen(url)
     bsObj = BeautifulSoup(html)
     for link in bsObj.findAll("a"):
         if 'href' in link.attrs:
             print(link.attrs['href'])
+            
+ def getPageElements(url, tag, attrs = ""):
+    """
+    Returns  all of the page elements that match specified page element tag and attributes.
+    This function is able to by-pass the server security feature of some sites that block known
+    spider/bot user agents.
+
+    Parameter url: a valid webapge url
+    Precondition: url is a string
+
+    Parameter tag: an element tag on the page
+    Precondition: tag is a string
+
+    Parameter attrs: the specified attribut
+    Precondition: attrs is a string
+    """
+    assert isinstance(url, str) and isinstance(tag, str)
+    assert isinstance(attrs, str) or isinstance(attrs, dict)
+    
+    try:
+        req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        html = urlopen(req).read()
+        bsObj = BeautifulSoup(html, 'lxml')
+        items = bsObj.findAll(tag, attrs)
+        try:
+            for item in  items:
+                if not item is None:
+                    print(item.get_text())
+        except AttributeError:
+            print('Attribute error. Are the attributes of that tag valid?')
+    except HTTPError:
+        print('Http error')
+        
+    except ValueError:
+        print('Value error. Is the url valid?')
+
+def popupmsg(msg, title, buttonmsg):
+    """
+    Creates a pop-up message
+    """
+    import easygui
+    try:
+        easygui.msgbox(msg, title, ok_button=str(buttonmsg))
+    except:
+        print('error in creating pop-up. Are you passing in strings?')
 
 
     
