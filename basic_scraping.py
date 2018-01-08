@@ -88,9 +88,7 @@ def getLinks(url):
         bsObj = BeautifulSoup(html, 'lxml')
         items = bsObj.findAll(tag, attrs)
         try:
-            for item in  items:
-                if not item is None:
-                    print(item.get_text())
+            return items
         except AttributeError:
             print('Attribute error. Are the attributes of that tag valid?')
     except HTTPError:
